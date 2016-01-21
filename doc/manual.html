@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>MAX10 Serial Config Updater</title>
+
+<style type="text/css">
+	body {
+		margin: 30px;
+		padding: 0;
+
+		font-family: "Segoe UI" , Avenir , "Open Sans" , "Helvetica Neue" , Helvetica , Arial , Verdana , Roboto , "游ゴシック" , "Yu Gothic" , "游ゴシック体" , "YuGothic" , "ヒラギノ角ゴ Pro W3" , "Hiragino Kaku Gothic Pro" , "Meiryo UI" , "メイリオ" , Meiryo , "ＭＳ Ｐゴシック" , "MS PGothic" , sans-serif;
+		font-size: 12pt;
+		line-height: 1.4;
+		color: #303830;
+	}
+	h1 {
+		font-size: 200%;
+		color: #006b6b;
+		text-shadow: 5px 5px 10px #d0d0d0;
+	}
+	img {
+		border: none;
+	}
+	.shadow {
+		margin-top: 8px;
+		display: inline-block;
+		box-shadow: 0px 5px 15px -5px rgba(0, 0, 0, 0.8);
+	}
+	p {
+		padding: 3px 10px 3px 15px;
+	}
+	li {
+		margin: 0.5em 0 0 0;
+	}
+
+	div.heading {
+		width: 100%;						/* 見出しエリアの幅 */
+		margin-bottom: 1em;
+		padding: 4px 0px;					/* 見出しエリアのパディング（上下、左右） */
+		border-bottom: 1px #4c4c4c solid;	/* 見出しエリアの下境界線 */
+	}
+	div.heading h2 {						/* 見出し文字の設定 */
+		margin: 0;
+		padding: 3px 3px 0px 5px;			/* 見出しのパディング（上右下左） */
+		border-left: 10px #a4c639 solid;	/* 見出しの左境界線 */
+		font-size: 150%;					/* 見出しの文字サイズ */
+		color: #006b6b;
+		line-height: 100%;
+	}
+</style>
+</head>
+<body>
+
+<h1 id="top">MAX10 Serial Config Updater</h1>
+<div style="text-align: right;">2016.01.21 released version 0.1.0</div>
+
+<div class="heading"><h2 id="overview">Overview</h2></div>
+<p>MAX10 Serial Config Updaterは、MAX10のデュアルイメージコンフィグレーション機能を用いて、一般的なUSBシリアルを使用して内蔵コンフィグレーションフラッシュメモリを書き換えるツールセットです。<br>
+最初のMAX10デバイスへブートローダーの書き込みにはUSB-Blasterが必要ですが、ブートローダーが書き込まれたMAX10デバイスへはUSBシリアルでコンフィグレーションデータの書き込みが可能になります。<br>
+書き込みツールはChromeアプリで提供され、Windows/Linux/Chromebook上のChromeであればOSを問わず利用が可能です。<br>
+</p>
+<br>
+
+<div class="heading"><h2 id="requirements">Requirements</h2></div>
+<p>MAX10 Serial Config Updaterは以下の環境で動作します。<br>
+<ul>
+<li>Windwos7/8.1/10、Linux、およびChromebook上のChrome 35以降
+<li>QuartusPrime 15.1以降
+<li>USBシリアル変換ケーブル(FTDI推奨)
+<li>Altera 10M08 Evaluation Kit
+<li>SODALITE (PROTOボード)
+</ul>
+<br>
+また他ボードへのエクスポートを行う場合は以下のリソースを必要とします。<br>
+<ul>
+<li>Altera MAX10 (10M08SAデバイス) を搭載したボード
+<li>UART(TxD,RxD)信号および50MHzのクロック信号
+</ul>
+</p>
+<br>
+
+<div class="heading"><h2 id="setup">Setup</h2></div>
+<h3>1. USBシリアルのセットアップ(Windowsのみ)</h3>
+<p><a href="http://www.ftdichip.com/Drivers/VCP.htm" target=_blank>FTDIのダウンロードページ</a>でVCPドライバをダウンロードしてインストールします。詳細手順は<a href="http://www.ftdichip.com/Support/Documents/InstallGuides.htm" target=_blank>こちら</a>。<br>
+<br>
+COMポートが認識されたら、デバイスマネージャーから該当COMポートを右クリックしてプロパティを開きます。<br>
+<img class="shadow" src="img/dm01.png"><br>
+<br>
+ポートの設定の詳細設定ボタンをクリックします。<br>
+<img class="shadow" src="img/dm02.png"><br>
+<br>
+BMオプションの待ち時間を16ms→1msへ変更してOKボタンで反映させます。<br>
+<img class="shadow" src="img/dm03.png"><br>
+<br>
+この設定はWindowsのみです。Linuxカーネル2.6以降ではFTDIのVCPが入っているため、LinuxおよびChromebookではUSBシリアルケーブルを接続するだけで使えます。<br>
+</p>
+<br>
+<h3>2. Chromeアプリのインストール</h3>
+<p>Chromeブラウザのアドレスバーで「chrome://extensions」と入力するか、右上の設定ボタンから「その他のツール→拡張機能」を選択して拡張機能のページを開きます。<br>
+<img class="shadow" src="img/setup01.png"><br>
+<br>
+rpdwriterフォルダ以下のmax10_rpdwriter.crxファイルをこのページにドラッグ＆ドロップしてインストールします。<br>
+下記のメッセージパネルが出るので、アプリを追加をクリックします。<br>
+<img class="shadow" src="img/setup02.png"><br>
+<br>
+Chromeブラウザのアプリページを開いて「MAX10 RPD-Writer」が追加されているのを確認してください。<br>
+<img class="shadow" src="img/setup03.png"><br>
+</p>
+<br>
+<h3>3. ブートローダーの書き込み</h3>
+<p>Altera 10M08 Evaluation Kit用のブートローダーイメージは下記のフォルダに格納されています。<br>
+　<em>max10_config_updater/qsf/10m08eval/bootloader/</em><br>
+<br>
+このフォルダにあるgeneric_10m08_top.pofをQuartus Programmerでボードへ書き込みます。<br>
+POFファイルの書き込みにはUSB-Blasterが必要です。<br>
+Quartus ProgrammerではCFM0のProgramのみチェックを入れ、CFM1とUFMはEraseをチェックして書き込みを実行してください。<br>
+<img class="shadow" src="img/pof.png"><br>
+</p>
+<br>
+
+<div class="heading"><h2 id="howtouse">How to use</h2></div>
+<p>
+<img class="shadow" src="img/eval.png"><br>
+<!--
+<img class="shadow" src="img/rw01.png"><br>
+<img class="shadow" src="img/rw02.png"><br>
+<img class="shadow" src="img/rw04.png"><br>
+-->
+</p>
+
+<div class="heading"><h2 id="download">Download</h2></div>
+<p>MAX10 Serial Config Updaterは下記リポジトリからダウンロードできます。<br>
+<a href="https://github.com/osafune/max10_config_updater/" target=_blank>
+<img alt="GitHub-Mark" width="32" height="32" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpFNTE3OEEyQTk5QTAxMUUyOUExNUJDMTA0NkE4OTA0RCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpFNTE3OEEyQjk5QTAxMUUyOUExNUJDMTA0NkE4OTA0RCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkU1MTc4QTI4OTlBMDExRTI5QTE1QkMxMDQ2QTg5MDREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkU1MTc4QTI5OTlBMDExRTI5QTE1QkMxMDQ2QTg5MDREIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+m4QGuQAAAyRJREFUeNrEl21ojWEYx895TDPbMNlBK46IUiNmPvHBSUjaqc0H8pF5+aDUKPEBqU2NhRQpX5Rv5jWlDIWlMCv7MMSWsWwmb3tpXub4XXWdPHvc9/Gc41nu+nedc7/8r/99PffLdYdDPsvkwsgkTBwsA/PADJCnzX2gHTwBt8Hl7p537/3whn04XoDZDcpBlk+9P8AFcAghzRkJwPF4zGGw0Y9QS0mAM2AnQj77FqCzrtcwB1Hk81SYojHK4DyGuQ6mhIIrBWB9Xm7ug/6B/nZrBHBegrkFxoVGpnwBMSLR9EcEcC4qb8pP14BWcBcUgewMnF3T34VqhWMFkThLJAalwnENOAKiHpJq1FZgI2AT6HZtuxZwR9GidSHtI30jOrbawxlVX78/AbNfhHlomEUJJI89O2MqeE79T8/nk8nMBm/dK576hZgmA3cp/R4l9/UeSxiHLVIlNm4nFfT0bxyuIj7LHRTKai+zdJobwMKzcZSJb0ePV5PKN+BqAAKE47UlMnERELMM3EdYP/yrd+XYb2mOiYBiQ8OQnoRBlXrl9JZix7D1pHTazu4MoyBcnYamqAjIMTR8G4FT8LuhLsexXYYjICBiqhQBvYb6fLZIJCjPypVvaOoVAW2WcasCnL2Nq82xHJNSqlCeFcDshaPK0twkAhosjZL31QYw+1rlMpWGMArl23SBsZZO58F2tlJXmjOXS+s4WGvpMiBJT/I2PInZ6lIs9/hBsNS1hS6BG0DSqmYEDRlCXQrmy50P1oDRKTSegmNbUsA0zDMwRhPJXeCE3vWLPQMvan6X8AgIa1vcR4AkGZkDR4ejJ1UHpsaVI0g2LInpOsNFUud1rhxSV+fzC9Woz2EZkWQuja7/B+jUrgtIMpy9YCW4n4K41YfzRneW5E1KJTe4B2Zq1Q5EHEtj4U3AfEzR5SVY4l7QYQPJdN2as7RKBF0BPZqqH4VgMAMBL8Byxr7y8zCZiDlnOcEKIPmUpgB5Z2ww5RdOiiRiNajUmWda5IG6WbhsyY2fx6m8gLcoJDJFkH219M3We1+cnda93pfycZpIJEL/s/wSYADmOAwAQgdpBAAAAABJRU5ErkJggg==">
+<span style="font-size:200%;">max10_config_updater</span>
+</a>
+</p>
+<br>
+
+<div class="heading"><h2 id="license">License</h2></div>
+<p>本ソフトウェアパッケージはMITライセンスの元に発行されています。<br>
+<br>
+<a href="http://opensource.org/licenses/mit-license.php" target=_blank>The MIT License (MIT)</a><br>
+<br>
+ただし各々のソースに対し、別途個別に明記ある場合はそのライセンスを優先するものとします。<br>
+また本パッケージにはAltera社のツールにより自動生成されたファイルが含まれます。
+Quartusプロジェクトフォルダ以下のファイルについてはAltera社のライセンス条項を確認してください。<br>
+</p>
+<br>
+
+<div align="right" style="color:#006b6b;"><strong>&copy;2016 J-7SYSTEM WORKS LIMITED.</strong></div>
+
+</body></html>
