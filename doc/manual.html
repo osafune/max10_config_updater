@@ -19,19 +19,27 @@
 		color: #006b6b;
 		text-shadow: 5px 5px 10px #d0d0d0;
 	}
-	img {
-		border: none;
-	}
-	.shadow {
-		margin-top: 8px;
-		display: inline-block;
-		box-shadow: 0px 5px 15px -5px rgba(0, 0, 0, 0.8);
-	}
 	p {
 		padding: 3px 10px 3px 15px;
 	}
 	li {
 		margin: 0.5em 0 0 0;
+	}
+	pre {
+		font-size: 92%;
+		width: fit-content;
+		margin: 0 0 0 20px;
+		padding: 8px;
+		border: 1px solid;
+	}
+	img {
+		border: none;
+	}
+
+	img.shadow {							/* ドロップシャドウ付きイメージ */
+		margin-top: 8px;
+		display: inline-block;
+		box-shadow: 0px 5px 15px -5px rgba(0, 0, 0, 0.8);
 	}
 
 	div.heading {
@@ -53,9 +61,10 @@
 <body>
 
 <h1 id="top">MAX10 Serial Config Updater</h1>
-<div style="text-align: right;">2016.01.21 released version 0.1.0</div>
+<div style="text-align: right;">2016.01.22 released version 0.1.0</div>
 
 <div class="heading"><h2 id="overview">Overview</h2></div>
+
 <p>MAX10 Serial Config Updaterは、MAX10のデュアルイメージコンフィグレーション機能を用いて、一般的なUSBシリアルを使用して内蔵コンフィグレーションフラッシュメモリを書き換えるツールセットです。<br>
 最初のMAX10デバイスへブートローダーの書き込みにはUSB-Blasterが必要ですが、ブートローダーが書き込まれたMAX10デバイスへはUSBシリアルでコンフィグレーションデータの書き込みが可能になります。<br>
 書き込みツールはChromeアプリで提供され、Windows/Linux/Chromebook上のChromeであればOSを問わず利用が可能です。<br>
@@ -63,24 +72,23 @@
 <br>
 
 <div class="heading"><h2 id="requirements">Requirements</h2></div>
-<p>MAX10 Serial Config Updaterは以下の環境で動作します。<br>
+
+<p>MAX10 Serial Config Updaterは以下の環境で動作します。</p>
 <ul>
 <li>Windwos7/8.1/10、Linux、およびChromebook上のChrome 35以降
-<li>QuartusPrime 15.1以降
 <li>USBシリアル変換ケーブル(FTDI推奨)
-<li>Altera 10M08 Evaluation Kit
-<li>SODALITE (PROTOボード)
+<li>Altera 10M08 Evaluation Kit または SODALITE(PROTOボード)
 </ul>
-<br>
-また他ボードへのエクスポートを行う場合は以下のリソースを必要とします。<br>
+<p>またユーザープロジェクトの作成には下記の環境が必要です。</p>
 <ul>
-<li>Altera MAX10 (10M08SAデバイス) を搭載したボード
-<li>UART(TxD,RxD)信号および50MHzのクロック信号
+<li>Windows 7/8.1 (64bit)、またはLinux(RHEL5.1/6.5)
+<li>QuartusPrime 15.1以降
 </ul>
-</p>
+<p>OSサポートの詳細に関しては<a href="https://www.altera.co.jp/support/support-resources/download/os-support.html" target=_blank>Alteraのオペレーティング・システム・サポート</a>を参照してください。</p>
 <br>
 
 <div class="heading"><h2 id="setup">Setup</h2></div>
+
 <h3>1. USBシリアルのセットアップ(Windowsのみ)</h3>
 <p><a href="http://www.ftdichip.com/Drivers/VCP.htm" target=_blank>FTDIのダウンロードページ</a>でVCPドライバをダウンロードしてインストールします。詳細手順は<a href="http://www.ftdichip.com/Support/Documents/InstallGuides.htm" target=_blank>こちら</a>。<br>
 <br>
@@ -95,7 +103,7 @@ BMオプションの待ち時間を16ms→1msへ変更してOKボタンで反映
 <br>
 この設定はWindowsのみです。Linuxカーネル2.6以降ではFTDIのVCPが入っているため、LinuxおよびChromebookではUSBシリアルケーブルを接続するだけで使えます。<br>
 </p>
-<br>
+
 <h3>2. Chromeアプリのインストール</h3>
 <p>Chromeブラウザのアドレスバーで「chrome://extensions」と入力するか、右上の設定ボタンから「その他のツール→拡張機能」を選択して拡張機能のページを開きます。<br>
 <img class="shadow" src="img/setup01.png"><br>
@@ -104,10 +112,11 @@ rpdwriterフォルダ以下のmax10_rpdwriter.crxファイルをこのページ�
 下記のメッセージパネルが出るので、アプリを追加をクリックします。<br>
 <img class="shadow" src="img/setup02.png"><br>
 <br>
-Chromeブラウザのアプリページを開いて「MAX10 RPD-Writer」が追加されているのを確認してください。<br>
+Chromeブラウザのアドレスバーで「chrome://apps」と入力してアプリページを開き、「MAX10 RPD-Writer」が追加されているのを確認してください。<br>
 <img class="shadow" src="img/setup03.png"><br>
 </p>
 <br>
+
 <h3>3. ブートローダーの書き込み</h3>
 <p>Altera 10M08 Evaluation Kit用のブートローダーイメージは下記のフォルダに格納されています。<br>
 　<em>max10_config_updater/qsf/10m08eval/bootloader/</em><br>
@@ -120,25 +129,93 @@ Quartus ProgrammerではCFM0のProgramのみチェックを入れ、CFM1とUFM�
 <br>
 
 <div class="heading"><h2 id="howtouse">How to use</h2></div>
-<p>
+
+<h3>1. ホストPCとの接続</h3>
+<p>ホストPCにUSB-シリアルケーブルを接続し、TXD、RXD、GNDを図のように接続します。<br>
+CONFIG_SELのDIPスイッチをOFF(BOOT側)にセットしてUSB-miniBを接続して電源を入れます。<br>
 <img class="shadow" src="img/eval.png"><br>
-<!--
+</p>
+<br>
+
+<h3>2. RPD-Writerの使い方</h3>
+<p>Chromeアプリページから「MAX10 RPD-Writer」をクリックして書き込みツールを起動します。<br>
+ボードに接続したシリアルポートを選択して、接続をクリックします。<br>
+MAX10のブートローダーが認識されれば緑色のチェックアイコンが表示されます。<br>
 <img class="shadow" src="img/rw01.png"><br>
+<br>
+コンフィグレーションデータを更新する場合はCFM、ユーザー領域データを更新する場合はUFMのファイル選択ボタンで書き込むファイルを選択します。<br>
 <img class="shadow" src="img/rw02.png"><br>
+<br>
+ファイル選択後、書き込みボタンをクリックするとデータの更新を開始します。<br>
+データ更新中はシリアルケーブルを抜いたり、ボードの電源を切らないように注意してください。<br>
+<img class="shadow" src="img/rw03.png"><br>
+<br>
+書き込みが成功するとチップアイコンが青色になります。<br>
 <img class="shadow" src="img/rw04.png"><br>
--->
+<br>
+切断をクリックしてシリアル接続を解除してから、ボード上のCONFIG_SELをON(USER側)にセットしRECONFIGボタンを押すと、書き込んだデータでMAX10が再コンフィグレーションされます。<br>
+下記はコンパイル済みのAltera 10M08 Evaluation Kit用のサンプルコンフィグです。CFMを書き換えてLEDの点滅が変わるのを確認できます。<br>
+　<em>max10_config_updater/rpdwriter/blink_cfm1_auto.rpd</em><br>
+　<em>max10_config_updater/rpdwriter/lampy_cfm1_auto.rpd</em><br>
+</p>
+<br>
+
+<div class="heading"><h2 id="porting">Porting</h2></div>
+
+<p>以降は、ユーザーでプロジェクトを作成する場合の手順になります。
+</p>
+<h3>1. ユーザープロジェクトの作成について</h3>
+<p>MAX10 Serial Config Updaterでの書き込みに対応するには、デュアルコンフィグレーション対応のプロジェクトを作成する必要があります。<br>
+Quartusでプロジェクトを作成後、Device→Device and Pin Options...を開き、Generalの「Enable CONFIG_SEL pin」にチェックを入れます。
+次にConfigurationのConfiguration modeを「Dual Compressed Image」に変更します。<br>
+<img class="shadow" src="img/devset01.png"><br>
+<img class="shadow" src="img/devset02.png"><br>
+<br>
+次に、サンプルプロジェクトのdualboot_ipフォルダを、新しく作成したプロジェクトフォルダにコピーします。<br>
+qsfファイルをテキストエディタで開き、下の２行を追加して保存します。</p>
+<pre>
+set_global_assignment -name QIP_FILE dualboot_ip/dual_image_boot/synthesis/dual_image_boot.qip
+set_global_assignment -name POST_MODULE_SCRIPT_FILE "quartus_sh:dualboot_ip/auto_generate_dualboot_rpd.tcl"
+</pre>
+<p>これでコンパイル後にRPD-Writerで書き込めるRPDファイルが生成されるようになります。<br>
+RPDファイルはプロジェクトフォルダのoutput_files以下に「<em>&lt;プロジェクト名&gt;</em>_cfm1_auto.rpd」という名前で生成されます。<br>
+<br>
+MAX10 Serial Config UpdaterではMAX10のデュアルコンフィグ機能を利用しているため、作成するユーザープロジェクトは以下の制約を受けます。<br>
+<ul>
+<li><strong style="color:#e00;">M9Kメモリマクロの初期値を使うことができない</strong><br>
+M9Kメモリは全て初期値０としてインスタンスされます。<br>
+mifファイル等による明示的な指示のあるものは初期値が無視されます。またテーブルROMとして推測されていたものは、全て組み合わせ回路として合成されます。<br>
+初期値が必要なRAMやテーブル引きROMでは、コンフィグレーション後にUFM等の外部メモリから値を書き込むユーザーロジックが別途必要です。<br>
+<li><strong style="color:#e00;">CONFIG_SELピンをI/Oとして使うことができない</strong><br>
+CONFIG_SELピンにI/Oピンがアサインされていると合成でエラーになります。<br>
+</ul>
 </p>
 
+<h3>2. ブートローダーの組み込み</h3>
+<p>generic_10m08ブートローダーはAltera 10M08SAデバイス汎用で使うことができます。<br>
+下記の要件を満たすボードであればピンアサインを変更するだけで対応が可能です。</p>
+<ul>
+<li>Altera MAX10 FPGAファミリ（10M08SA）
+<li>50MHzのクロック（内部でPLLによる生成でも可）
+<li>115.2kbpsのUART（RXD,TXD）または接続可能なI/Oピン
+</ul>
+<p>bootloader以下のgeneric_10m08_top.qarをQuartusで展開し、デバイスとピンアサインをボードに合わせて変更してください。<br>
+ブートローダーのコンパイルではsofまでしか生成されないので、Convert Programming fileで書き込み用のPOFに変換が必要です。<br>
+</p>
+<br>
+
 <div class="heading"><h2 id="download">Download</h2></div>
+
 <p>MAX10 Serial Config Updaterは下記リポジトリからダウンロードできます。<br>
-<a href="https://github.com/osafune/max10_config_updater/" target=_blank>
+<a href="https://github.com/osafune/max10_config_updater" target=_blank>
 <img alt="GitHub-Mark" width="32" height="32" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpFNTE3OEEyQTk5QTAxMUUyOUExNUJDMTA0NkE4OTA0RCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpFNTE3OEEyQjk5QTAxMUUyOUExNUJDMTA0NkE4OTA0RCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkU1MTc4QTI4OTlBMDExRTI5QTE1QkMxMDQ2QTg5MDREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkU1MTc4QTI5OTlBMDExRTI5QTE1QkMxMDQ2QTg5MDREIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+m4QGuQAAAyRJREFUeNrEl21ojWEYx895TDPbMNlBK46IUiNmPvHBSUjaqc0H8pF5+aDUKPEBqU2NhRQpX5Rv5jWlDIWlMCv7MMSWsWwmb3tpXub4XXWdPHvc9/Gc41nu+nedc7/8r/99PffLdYdDPsvkwsgkTBwsA/PADJCnzX2gHTwBt8Hl7p537/3whn04XoDZDcpBlk+9P8AFcAghzRkJwPF4zGGw0Y9QS0mAM2AnQj77FqCzrtcwB1Hk81SYojHK4DyGuQ6mhIIrBWB9Xm7ug/6B/nZrBHBegrkFxoVGpnwBMSLR9EcEcC4qb8pP14BWcBcUgewMnF3T34VqhWMFkThLJAalwnENOAKiHpJq1FZgI2AT6HZtuxZwR9GidSHtI30jOrbawxlVX78/AbNfhHlomEUJJI89O2MqeE79T8/nk8nMBm/dK576hZgmA3cp/R4l9/UeSxiHLVIlNm4nFfT0bxyuIj7LHRTKai+zdJobwMKzcZSJb0ePV5PKN+BqAAKE47UlMnERELMM3EdYP/yrd+XYb2mOiYBiQ8OQnoRBlXrl9JZix7D1pHTazu4MoyBcnYamqAjIMTR8G4FT8LuhLsexXYYjICBiqhQBvYb6fLZIJCjPypVvaOoVAW2WcasCnL2Nq82xHJNSqlCeFcDshaPK0twkAhosjZL31QYw+1rlMpWGMArl23SBsZZO58F2tlJXmjOXS+s4WGvpMiBJT/I2PInZ6lIs9/hBsNS1hS6BG0DSqmYEDRlCXQrmy50P1oDRKTSegmNbUsA0zDMwRhPJXeCE3vWLPQMvan6X8AgIa1vcR4AkGZkDR4ejJ1UHpsaVI0g2LInpOsNFUud1rhxSV+fzC9Woz2EZkWQuja7/B+jUrgtIMpy9YCW4n4K41YfzRneW5E1KJTe4B2Zq1Q5EHEtj4U3AfEzR5SVY4l7QYQPJdN2as7RKBF0BPZqqH4VgMAMBL8Byxr7y8zCZiDlnOcEKIPmUpgB5Z2ww5RdOiiRiNajUmWda5IG6WbhsyY2fx6m8gLcoJDJFkH219M3We1+cnda93pfycZpIJEL/s/wSYADmOAwAQgdpBAAAAABJRU5ErkJggg==">
-<span style="font-size:200%;">max10_config_updater</span>
+<span style="font-size:200%;">MAX10 Serial Config Updater</span>
 </a>
 </p>
 <br>
 
 <div class="heading"><h2 id="license">License</h2></div>
+
 <p>本ソフトウェアパッケージはMITライセンスの元に発行されています。<br>
 <br>
 <a href="http://opensource.org/licenses/mit-license.php" target=_blank>The MIT License (MIT)</a><br>
