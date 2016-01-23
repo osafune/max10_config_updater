@@ -3,7 +3,7 @@ MAX10 Serial Config Updater
 
 MAX10のコンフィグレーションデータをシリアルUARTで書き換えるためのブートローダおよびChromeアプリです。
 
-![overview](https://github.com/osafune/max10_config_updater/tree/master/doc/img/overview.png)
+![overview](https://raw.githubusercontent.com/osafune/max10_config_updater/master/doc/img/overview.png)
 
 
 必要な環境
