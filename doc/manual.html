@@ -61,15 +61,16 @@
 <body>
 
 <h1 id="top">MAX10 Serial Config Updater</h1>
-<div style="text-align: right;">2016.01.22 released version 0.1.0</div>
+<div style="text-align: right;">2016.01.24 released version 0.1.0</div>
 
 <div class="heading"><h2 id="overview">Overview</h2></div>
 
 <p>MAX10 Serial Config Updaterは、MAX10のデュアルイメージコンフィグレーション機能を用いて、一般的なUSBシリアルを使用して内蔵コンフィグレーションフラッシュメモリを書き換えるツールセットです。<br>
 最初のMAX10デバイスへブートローダーの書き込みにはUSB-Blasterが必要ですが、ブートローダーが書き込まれたMAX10デバイスへはUSBシリアルでコンフィグレーションデータの書き込みが可能になります。<br>
 書き込みツールはChromeアプリで提供され、Windows/Linux/Chromebook上のChromeであればOSを問わず利用が可能です。<br>
-</p>
 <br>
+<img src="img/overview.png"><br>
+</p>
 
 <div class="heading"><h2 id="requirements">Requirements</h2></div>
 
@@ -155,8 +156,8 @@ MAX10のブートローダーが認識されれば緑色のチェックアイコ
 <br>
 切断をクリックしてシリアル接続を解除してから、ボード上のCONFIG_SELをON(USER側)にセットしRECONFIGボタンを押すと、書き込んだデータでMAX10が再コンフィグレーションされます。<br>
 下記はコンパイル済みのAltera 10M08 Evaluation Kit用のサンプルコンフィグです。CFMを書き換えてLEDの点滅が変わるのを確認できます。<br>
-　<em>max10_config_updater/rpdwriter/blink_cfm1_auto.rpd</em><br>
-　<em>max10_config_updater/rpdwriter/lampy_cfm1_auto.rpd</em><br>
+　<em>max10_config_updater/rpdwriter/sample_rpd/blink_cfm1_auto.rpd</em><br>
+　<em>max10_config_updater/rpdwriter/sample_rpd/lampy_cfm1_auto.rpd</em><br>
 </p>
 <br>
 
@@ -166,9 +167,10 @@ MAX10のブートローダーが認識されれば緑色のチェックアイコ
 </p>
 <h3>1. ユーザープロジェクトの作成について</h3>
 <p>MAX10 Serial Config Updaterでの書き込みに対応するには、デュアルコンフィグレーション対応のプロジェクトを作成する必要があります。<br>
-Quartusでプロジェクトを作成後、Device→Device and Pin Options...を開き、Generalの「Enable CONFIG_SEL pin」にチェックを入れます。
-次にConfigurationのConfiguration modeを「Dual Compressed Image」に変更します。<br>
+Quartusでプロジェクトを作成後、Device→Device and Pin Options...を開き、Generalの「Enable CONFIG_SEL pin」にチェックを入れます。<br>
 <img class="shadow" src="img/devset01.png"><br>
+<br>
+ConfigurationのConfiguration modeを「Dual Compressed Image」に変更します。<br>
 <img class="shadow" src="img/devset02.png"><br>
 <br>
 次に、サンプルプロジェクトのdualboot_ipフォルダを、新しく作成したプロジェクトフォルダにコピーします。<br>
@@ -182,12 +184,14 @@ RPDファイルはプロジェクトフォルダのoutput_files以下に「<em>&
 <br>
 MAX10 Serial Config UpdaterではMAX10のデュアルコンフィグ機能を利用しているため、作成するユーザープロジェクトは以下の制約を受けます。<br>
 <ul>
-<li><strong style="color:#e00;">M9Kメモリマクロの初期値を使うことができない</strong><br>
+<li><strong style="color:#e00;">M9Kメモリの初期値を使うことができない</strong><br>
 M9Kメモリは全て初期値０としてインスタンスされます。<br>
 mifファイル等による明示的な指示のあるものは初期値が無視されます。またテーブルROMとして推測されていたものは、全て組み合わせ回路として合成されます。<br>
 初期値が必要なRAMやテーブル引きROMでは、コンフィグレーション後にUFM等の外部メモリから値を書き込むユーザーロジックが別途必要です。<br>
 <li><strong style="color:#e00;">CONFIG_SELピンをI/Oとして使うことができない</strong><br>
 CONFIG_SELピンにI/Oピンがアサインされていると合成でエラーになります。<br>
+<li><strong style="color:#e00;">CFMをユーザー領域として使うことができない</strong><br>
+ユーザー領域として利用できる内蔵フラッシュはUFMの32kバイト(256kビット)のみです。<br>
 </ul>
 </p>
 
@@ -198,6 +202,7 @@ CONFIG_SELピンにI/Oピンがアサインされていると合成でエラー�
 <li>Altera MAX10 FPGAファミリ（10M08SA）
 <li>50MHzのクロック（内部でPLLによる生成でも可）
 <li>115.2kbpsのUART（RXD,TXD）または接続可能なI/Oピン
+<li>CONFIG_SELのH/L操作ができる
 </ul>
 <p>bootloader以下のgeneric_10m08_top.qarをQuartusで展開し、デバイスとピンアサインをボードに合わせて変更してください。<br>
 ブートローダーのコンパイルではsofまでしか生成されないので、Convert Programming fileで書き込み用のPOFに変換が必要です。<br>
