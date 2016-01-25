@@ -61,7 +61,7 @@
 <body>
 
 <h1 id="top">MAX10 Serial Config Updater</h1>
-<div style="text-align: right;">2016.01.24 released version 0.1.0</div>
+<div style="text-align: right;">2016.01.25 released version 0.1.0</div>
 
 <div class="heading"><h2 id="overview">Overview</h2></div>
 
@@ -145,6 +145,8 @@ MAX10のブートローダーが認識されれば緑色のチェックアイコ
 <img class="shadow" src="img/rw01.png"><br>
 <br>
 コンフィグレーションデータを更新する場合はCFM、ユーザー領域データを更新する場合はUFMのファイル選択ボタンで書き込むファイルを選択します。<br>
+v0.1.0では特に書き込むファイルのチェックはしていません。CFMはQuartusで生成されるrpdファイルを指定してください。
+またUFMはrpdファイルの他、32kバイト以内の任意のファイルを指定することができます。<br>
 <img class="shadow" src="img/rw02.png"><br>
 <br>
 ファイル選択後、書き込みボタンをクリックするとデータの更新を開始します。<br>
